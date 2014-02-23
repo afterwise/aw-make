@@ -43,43 +43,16 @@ endef
 
 -include $(shell find . -name "*$(EXESUF).dep")
 
-.PRECIOUS: %.x86.exe.o
+ifeq ($(TARGET),win32)
+.PRECIOUS: %.win32-x86.exe.o
 .SECONDEXPANSION:
 %.win32-x86.exe.o: %.c* | $$(PREREQS)
 	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) /Fo$@ /c $<
-
-.PRECIOUS: %.x86_64.macho.o
+else
+.PRECIOUS: %$(EXESUF).o
 .SECONDEXPANSION:
-%.osx-x86_64.macho.o: %.c* | $$(PREREQS)
+%$(EXESUF).o: %.c* | $$(PREREQS)
 	@$(make-deps)
 	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
-
-.PRECIOUS: %.x86.elf.o
-.SECONDEXPANSION:
-%.linux-x86.elf.o: %.c* | $$(PREREQS)
-	@$(make-deps)
-	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
-
-.PRECIOUS: %.ppu.elf.o
-.SECONDEXPANSION:
-%.cell-ppu.elf.o: %.c* | $$(PREREQS)
-	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
-
-.PRECIOUS: %.spu.elf.o
-.SECONDEXPANSION:
-%.cell-spu.elf.o: %.c* | $$(PREREQS)
-	@$(make-deps)
-	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
-
-.PRECIOUS: %.arm.elf.o
-.SECONDEXPANSION:
-%.android-arm.elf.o: %.c* | $$(PREREQS)
-	@$(make-deps)
-	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
-
-.PRECIOUS: %.arm.macho.o
-.SECONDEXPANSION:
-%.ios-arm.macho.o: %.c* | $$(PREREQS)
-	@$(make-deps)
-	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
+endif
 
