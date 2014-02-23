@@ -44,9 +44,9 @@ endef
 -include $(shell find . -name "*$(EXESUF).dep")
 
 ifeq ($(TARGET),win32)
-.PRECIOUS: %.win32-x86.exe.o
+.PRECIOUS: %$(EXESUF).o
 .SECONDEXPANSION:
-%.win32-x86.exe.o: %.c* | $$(PREREQS)
+%$(EXESUF).o: %.c* | $$(PREREQS)
 	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) /Fo$@ /c $<
 else
 .PRECIOUS: %$(EXESUF).o
