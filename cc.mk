@@ -1,35 +1,38 @@
 
 # compilers
 
-%.win32-exe.o: CC = "$(VCINSTALLDIR)/bin/cl" /nologo
-%.osx-x86_64.macho.o: CC = clang
-%.cell-ppu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppusnc
-%.cell-spu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
-%.android-arm.elf.o: CC = $(NDK_SDK_ROOT)/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/arm-linux-androideabi-gcc
+%.win32-x86.exe.o: CC = "$(VCINSTALLDIR)/bin/cl" /nologo
+%.darwin-x86_64.macho.o: CC = clang
+%.lv2-ppu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppusnc
+%.lv2-spu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
+%.android-arm.elf.o: CC = $(NDK_TOOLS)/arm-linux-androideabi-gcc
 %.ios-arm.macho.o: CC = clang
 
 # compiler flags
 
 %.win32-x86.exe.o: CFLAGS += /WL /TP /Y- /Zl /MD /EHs-c- /GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN
 
-%.osx-x86_64.macho.o: CFLAGS += -Wall -Wextra -Werror -msse2 -arch $(ARCH)
+%.darwin-x86_64.macho.o: CFLAGS += -Wall -Wextra -Werror -msse2 -arch x86_64
 
 %.linux-x86.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections -msse2
 
-%.cell-ppu.elf.o: CFLAGS += -Xdiag=2 -Xquit=1 -Xfastlibc \
+%.lv2-ppu.elf.o: CFLAGS += -Xdiag=2 -Xquit=1 -Xfastlibc \
         -I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/ppu/include \
         -I$(SCE_PS3_ROOT)/target/ppu/include/vectormath/c
 
-%.cell-spu.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections -fpic \
+%.lv2-spu.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections -fpic \
 	-I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/spu/include \
 	-I$(SCE_PS3_ROOT)/target/spu/include/vectormath/c
 
 %.android-arm.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
 	-funwind-tables -fstack-protector -fno-short-enums -fpic \
 	-march=armv7-a -mthumb-interwork -mfpu=neon -mfloat-abi=softfp \
-	-D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__ -DANDROID=1
+	-D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__ -DANDROID=1 \
+	--sysroot=$(NDK_SYSROOT)
 
-%.ios-arm.macho.o: CFLAGS += -Wall -Wextra -Werror -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SDK_ROOT)
+%.ios-arm.macho.o: CFLAGS += -Wall -Wextra -Werror \
+	-target armv7-apple-ios -mfpu=neon -mfloat-abi=softfp \
+	-isysroot $(IOS_SYSROOT)
 
 # common compile rules
 
@@ -43,7 +46,7 @@ endef
 
 -include $(shell find . -name "*$(EXESUF).dep")
 
-ifeq ($(TARGET),win32)
+ifneq ($(findstring win32,$(TARGET)),)
 .PRECIOUS: %$(EXESUF).o
 .SECONDEXPANSION:
 %$(EXESUF).o: %.c* | $$(PREREQS)
