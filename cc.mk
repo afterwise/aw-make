@@ -46,14 +46,15 @@ endef
 
 -include $(shell find . -name "*$(EXESUF).dep")
 
+.SECONDEXPANSION:
+.PRECIOUS: $$(PREREQS)
+
 ifneq ($(findstring win32,$(TARGET)),)
 .PRECIOUS: %$(EXESUF).o
-.SECONDEXPANSION:
 %$(EXESUF).o: %.c* | $$(PREREQS)
 	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) /Fo$@ /c $<
 else
 .PRECIOUS: %$(EXESUF).o
-.SECONDEXPANSION:
 %$(EXESUF).o: %.c* | $$(PREREQS)
 	@$(make-deps)
 	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
