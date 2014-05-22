@@ -7,5 +7,5 @@ endif
 
 .PHONY: clean
 clean:
-	rm -fv $(LITTER) | xargs echo --
+	$(RM) $(LITTER)
 
