@@ -46,16 +46,21 @@ endef
 
 -include $(shell find . -name "*$(EXESUF).dep")
 
-.SECONDEXPANSION:
-.PRECIOUS: $$(PREREQS)
+ifneq ($(REQUIRES),)
+%$(EXESUF).o: INCLUDES += $(REQUIRES)
+
+.PRECIOUS: $(REQUIRES)
+$(REQUIRES):
+	$(MAKE) -C $(shell echo $@ | grep -Eo '^[^\/\\]+') $(shell echo $@ | sed -E 's/^[^\/\\]+[\/\\]//')
+endif
 
 ifneq ($(findstring win32,$(TARGET)),)
 .PRECIOUS: %$(EXESUF).o
-%$(EXESUF).o: %.c* | $$(PREREQS)
+%$(EXESUF).o: %.c* | $(REQUIRES)
 	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) /Fo$@ /c $<
 else
 .PRECIOUS: %$(EXESUF).o
-%$(EXESUF).o: %.c* | $$(PREREQS)
+%$(EXESUF).o: %.c* | $(REQUIRES)
 	@$(make-deps)
 	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
 endif
