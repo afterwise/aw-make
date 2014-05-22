@@ -14,7 +14,8 @@
 %.win32-x86.exe: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO /LIBPATH:ext/windows/lib
 %.win32-x86.exe: LDLIBS += user32.lib kernel32.lib \
         psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
-        libOpenAL32.dll.a msvcrt.lib MSVCPRT.LIB
+        msvcrt.lib MSVCPRT.LIB
+%.win32-x86.exe: LDGAMELIBS += libOpenAL32.dll.a
 
 %.darwin-x86_64.macho: LDFLAGS += -Wl,-dead_strip -Wl,-undefined -Wl,error -Wl,-arch -Wl,x86_64
 %.darwin-x86_64.macho: LDGAMELIBS += -framework IOKit -framework Cocoa -framework OpenGL -framework OpenAL
@@ -22,6 +23,8 @@
 
 %.linux-x86.elf: LDFLAGS += -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
 %.linux-x86.elf: LDLIBS += -lgcc -lc -lm
+%.linux-x86.elf: LDGAMELIBS += -lGL -lopenal
+%.linux-x86.elf: LDTOOLLIBS += -lc++
 
 %.lv2-ppu.elf: LDFLAGS += --no-exceptions --strip-unused --strip-unused-data --strip-duplicates --sn-no-dtors \
         --no-standard-libraries --use-libcs -oformat=fself -L$(SCE_PS3_ROOT)/target/ppu/lib
@@ -32,23 +35,15 @@
 
 %.android-arm.elf: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
 	-Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
-%.android-arm.elf: LDLIBS += -lOpenSLES -lGLESv2 -llog -lm -lc
+%.android-arm.elf: LDLIBS += -llog -lm -lc
+%.android-arm.elf: LDGAMELIBS += -lOpenSLES -lGLESv2
 
 %.ios-arm.macho: LDFLAGS += -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SYSROOT)
 
-ifeq ($(TARGET),win32)
-define link-game
-	$(LD) $(LDFLAGS) /OUT:$@ $(LDGAMELIBS) $(LDLIBS) $^
-endef
-define link-tool
-	$(LD) $(LDFLAGS) /OUT:$@ $(LDTOOLLIBS) $(LDLIBS) $^
-endef
+# ex: $(call link, $@, $^ $(LDGAMELIBS))
+ifneq ($(findstring win32,$(TARGET)),)
+link = $(LD) $(LDFLAGS) /OUT:$(1) $(LDLIBS) $(2)
 else
-define link-game
-	$(LD) $(LDFLAGS) -o $@ $(LDGAMELIBS) $(LDLIBS) $^
-endef
-define link-tool
-	$(LD) $(LDFLAGS) -o $@ $(LDTOOLLIBS) $(LDLIBS) $^
-endef
+link = $(LD) $(LDFLAGS) -o $(1) $(LDLIBS) $(2)
 endif
 
