@@ -57,11 +57,11 @@ endif
 ifneq ($(findstring win32,$(TARGET)),)
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
-	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) /Fo$@ /c $<
+	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) $(addprefix /D, $(DEFINES)) /Fo$@ /c $<
 else
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
 	@$(make-deps)
-	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -o $@ -c $<
+	$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) $(addprefix -D, $(DEFINES)) -o $@ -c $<
 endif
 
