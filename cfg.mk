@@ -49,7 +49,7 @@ ifeq ($(TARGET),ios-arm)
 	export EXESUF := .$(TARGET).macho
 	export LIBSUF := .a
 
-	export IOS_HOME := /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform
-	export IOS_SYSROOT := $(IOS_HOME)/Developer/SDKs/$(shell ls $(IOS_HOME)/Developer/SDKs | sort -nrk1.9 | head -1)
+	export IOS_HOME := $(shell xcrun --sdk iphoneos --show-sdk-platform-path)
+	export IOS_SYSROOT := $(shell xcrun --sdk iphoneos --show-sdk-path)
 endif
 
