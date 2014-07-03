@@ -2,6 +2,7 @@
 # compilers
 
 %.win32-x86.exe.o: CC = "$(VCINSTALLDIR)/bin/cl" /nologo
+%.darwin-x86.macho.o: CC = clang
 %.darwin-x86_64.macho.o: CC = clang
 %.lv2-ppu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppusnc
 %.lv2-spu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
@@ -10,11 +11,17 @@
 
 # compiler flags
 
-%.win32-x86.exe.o: CFLAGS += /WL /TP /Y- /Zl /MD /EHs-c- /GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN
+%.win32-x86.exe.o: CFLAGS += /WL /TP /Y- /Zl /MD /EHs-c- \
+	/GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN
 
-%.darwin-x86_64.macho.o: CFLAGS += -Wall -Wextra -Werror -msse2 -arch x86_64
+%.darwin-x86.macho.o: CFLAGS += -Wall -Wextra -Werror \
+	-arch i386 -msse2 -fstrict-aliasing
 
-%.linux-x86.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections -msse2
+%.darwin-x86_64.macho.o: CFLAGS += -Wall -Wextra -Werror \
+	-arch x86_64 -msse2 -fstrict-aliasing
+
+%.linux-x86.elf.o: CFLAGS += -Wall -Wextra -Werror \
+	-msse2 -fstrict-aliasing -ffunction-sections -fdata-sections
 
 %.lv2-ppu.elf.o: CFLAGS += -Xdiag=2 -Xquit=1 -Xfastlibc \
         -I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/ppu/include \

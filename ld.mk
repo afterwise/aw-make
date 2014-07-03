@@ -2,6 +2,7 @@
 # linkers
 
 %.win32-x86.exe: LD = "$(VCINSTALLDIR)/bin/link" /nologo
+%.darwin-x86.macho: LD = clang
 %.darwin-x86_64.macho: LD = clang
 %.linux-x86.elf: LD = $(CC)
 %.lv2-ppu.elf: LD = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppuld
@@ -16,7 +17,8 @@
         psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
         msvcrt.lib MSVCPRT.LIB
 
-%.darwin-x86_64.macho: LDFLAGS += -Wl,-dead_strip -Wl,-undefined -Wl,error -Wl,-arch -Wl,x86_64
+%.darwin-x86.macho: LDFLAGS += -Wl,-dead_strip -Wl,-arch -Wl,i386
+%.darwin-x86_64.macho: LDFLAGS += -Wl,-dead_strip -Wl,-arch -Wl,x86_64
 
 %.linux-x86.elf: LDFLAGS += -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
 %.linux-x86.elf: LDLIBS += -lgcc -lc -lm
