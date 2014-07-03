@@ -6,7 +6,7 @@ ifneq ($(findstring CYGWIN,$(HOST)),)
 	export HOST := win32-$(HOST_ARCH)
 	export TARGET ?= $(HOST)
 	export HOSTEXESUF := .$(HOST).exe
-	export EXESUF := .$(HOST).exe
+	export EXESUF := .$(TARGET).exe
 	export LIBSUF := .lib
 endif
 
@@ -14,7 +14,7 @@ ifeq ($(HOST),Darwin)
 	export HOST := darwin-$(HOST_ARCH)
 	export TARGET ?= $(HOST)
 	export HOSTEXESUF := .$(HOST).macho
-	export EXESUF := .$(HOST).macho
+	export EXESUF := .$(TARGET).macho
 	export LIBSUF := .a
 endif
 
@@ -22,7 +22,7 @@ ifeq ($(HOST),Linux)
 	export HOST := linux-$(HOST_ARCH)
 	export TARGET ?= $(HOST)
 	export HOSTEXESUF := .$(HOST).elf
-	export EXESUF := .$(HOST).elf
+	export EXESUF := .$(TARGET).elf
 	export LIBSUF := .a
 endif
 
