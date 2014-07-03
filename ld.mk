@@ -44,6 +44,22 @@ else ifneq ($(findstring darwin,$(TARGET)),)
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
+PLIST_ID_PREFIX ?= unknown
+define link-bundle
+	@tput setaf 2
+	mkdir -p $(subst $(EXESUF),,$@).bundle/Contents/MacOS
+	$(AW_MAKE_PATH)/plistgen.sh macosx bundle $(PLIST_ID_PREFIX) $(subst $(EXESUF),,$@)
+	$(LD) $(LDFLAGS) -o $(subst $(EXESUF),,$@).bundle/Contents/MacOS/$(subst $(EXESUF),,$@) \
+		$(addprefix -force_load , $^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) \
+		$(addprefix -l, $(LIBRARIES)) -bundle
+	test ! -e en.lproj/InfoPlist.strings || \
+		(mkdir -p $(subst $(EXESUF),,$@).bundle/Contents/Resources/en.lproj && \
+		plutil -convert binary1 \
+			-o $(subst $(EXESUF),,$@).bundle/Contents/Resources/en.lproj/InfoPlist.strings \
+			-- en.lproj/InfoPlist.strings)
+	touch $@
+	@tput sgr0
+endef
 else
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -l, $(LIBRARIES))
