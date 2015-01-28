@@ -43,6 +43,10 @@
 
 # common compile rules
 
+ifdef NODEPS
+define make-deps
+endef
+else
 define make-deps
 $(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -c $< -MM > $*$(EXESUF).dep
 mv -f $*$(EXESUF).dep $*$(EXESUF).dep.tmp
@@ -50,6 +54,7 @@ sed -e 's|.*:|$*$(EXESUF).o:|' < $*$(EXESUF).dep.tmp > $*$(EXESUF).dep
 sed -e 's/.*://' -e 's/\\$$//' < $*$(EXESUF).dep.tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $*$(EXESUF).dep
 rm -f $*$(EXESUF).dep.tmp
 endef
+endif
 
 -include $(shell find . -name "*$(EXESUF).dep")
 
