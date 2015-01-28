@@ -62,5 +62,8 @@ else
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -l, $(LIBRARIES))
 endef
+define link-bundle
+	$(LD) $(LDFLAGS) -shared -o lib$@.so -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDLIBS)
+endef
 endif
 
