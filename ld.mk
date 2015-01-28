@@ -46,7 +46,6 @@ define link
 endef
 PLIST_ID_PREFIX ?= unknown
 define link-bundle
-	@tput setaf 2
 	mkdir -p $(subst $(EXESUF),,$@).bundle/Contents/MacOS
 	$(AW_MAKE_PATH)/plistgen.sh macosx bundle $(PLIST_ID_PREFIX) $(subst $(EXESUF),,$@)
 	$(LD) $(LDFLAGS) -o $(subst $(EXESUF),,$@).bundle/Contents/MacOS/$(subst $(EXESUF),,$@) \
@@ -58,7 +57,6 @@ define link-bundle
 			-o $(subst $(EXESUF),,$@).bundle/Contents/Resources/en.lproj/InfoPlist.strings \
 			-- en.lproj/InfoPlist.strings)
 	touch $@
-	@tput sgr0
 endef
 else
 define link
