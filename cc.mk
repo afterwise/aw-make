@@ -11,35 +11,35 @@
 
 # compiler flags
 
-%.win32-x86.exe.o: CFLAGS += /WL /TP /Y- /Zl /MD /EHs-c- \
-	/GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN
+%.win32-x86.exe.o: CFLAGS := /WL /TP /Y- /Zl /MD /EHs-c- \
+	/GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN $(CFLAGS)
 
-%.darwin-x86.macho.o: CFLAGS += -Wall -Wextra -Werror \
-	-arch i386 -msse2 -fstrict-aliasing
+%.darwin-x86.macho.o: CFLAGS := -Wall -Wextra -Werror \
+	-arch i386 -msse2 -fstrict-aliasing $(CFLAGS)
 
-%.darwin-x86_64.macho.o: CFLAGS += -Wall -Wextra -Werror \
-	-arch x86_64 -msse2 -fstrict-aliasing
+%.darwin-x86_64.macho.o: CFLAGS := -Wall -Wextra -Werror \
+	-arch x86_64 -msse2 -fstrict-aliasing $(CFLAGS)
 
-%.linux-x86.elf.o: CFLAGS += -Wall -Wextra -Werror \
-	-msse2 -fstrict-aliasing -ffunction-sections -fdata-sections
+%.linux-x86.elf.o: CFLAGS := -Wall -Wextra -Werror \
+	-msse2 -fstrict-aliasing -ffunction-sections -fdata-sections $(CFLAGS)
 
-%.lv2-ppu.elf.o: CFLAGS += -Xdiag=2 -Xquit=1 -Xfastlibc \
+%.lv2-ppu.elf.o: CFLAGS := -Xdiag=2 -Xquit=1 -Xfastlibc \
         -I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/ppu/include \
-        -I$(SCE_PS3_ROOT)/target/ppu/include/vectormath/c
+        -I$(SCE_PS3_ROOT)/target/ppu/include/vectormath/c $(CFLAGS)
 
-%.lv2-spu.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections -fpic \
+%.lv2-spu.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections -fpic \
 	-I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/spu/include \
-	-I$(SCE_PS3_ROOT)/target/spu/include/vectormath/c
+	-I$(SCE_PS3_ROOT)/target/spu/include/vectormath/c $(CFLAGS)
 
-%.android-arm.elf.o: CFLAGS += -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
-	-funwind-tables -fstack-protector -fno-short-enums -fpic \
+%.android-arm.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
+	-fstack-protector -fno-short-enums -fpic \
 	-march=armv7-a -mthumb-interwork -mfpu=neon -mfloat-abi=softfp \
-	-D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__ -DANDROID=1 \
-	--sysroot=$(NDK_SYSROOT)
+	-D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__ \
+	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
-%.ios-arm.macho.o: CFLAGS += -Wall -Wextra -Werror \
+%.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror \
 	-target armv7-apple-ios -mfpu=neon -mfloat-abi=softfp \
-	-isysroot $(IOS_SYSROOT)
+	-isysroot $(IOS_SYSROOT) $(CFLAGS)
 
 # common compile rules
 
