@@ -21,7 +21,7 @@
 %.darwin-x86_64.macho: LDFLAGS += -Wl,-dead_strip -Wl,-arch -Wl,x86_64
 
 %.linux-x86.elf: LDFLAGS += -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
-%.linux-x86.elf: LDLIBS += -lgcc -lc -lm
+%.linux-x86.elf: LDLIBS += -lm -lc -lgcc
 
 %.lv2-ppu.elf: LDFLAGS += --no-exceptions --strip-unused --strip-unused-data --strip-duplicates --sn-no-dtors \
         --no-standard-libraries --use-libcs -oformat=fself -L$(SCE_PS3_ROOT)/target/ppu/lib
@@ -32,7 +32,7 @@
 
 %.android-arm.elf: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
 	-Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
-%.android-arm.elf: LDLIBS += -llog -lm -lc
+%.android-arm.elf: LDLIBS += -llog -lm -lc -lgcc
 
 %.ios-arm.macho: LDFLAGS += -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SYSROOT)
 
