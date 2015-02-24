@@ -8,6 +8,7 @@
 %.lv2-spu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
 %.android-arm.elf.o: CC = $(NDK_TOOLS)/arm-linux-androideabi-gcc
 %.ios-arm.macho.o: CC = clang
+%.ios-arm64.macho.o: CC = clang
 
 # compiler flags
 
@@ -40,6 +41,9 @@
 %.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror \
 	-target armv7-apple-ios -mfpu=neon -mfloat-abi=softfp \
 	-isysroot $(IOS_SYSROOT) $(CFLAGS)
+
+%.ios-arm64.macho.o: CFLAGS := -Wall -Wextra -Werror \
+	-arch arm64 -isysroot $(IOS_SYSROOT) $(CFLAGS)
 
 # common compile rules
 

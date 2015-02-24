@@ -9,6 +9,7 @@
 %.lv2-spu.elf: LD = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
 %.android-arm.elf: LD = $(NDK_TOOLS)/arm-linux-androideabi-gcc
 %.ios-arm.macho: LD = clang
+%.ios-arm64.macho: LD = clang
 
 # linker flags
 
@@ -35,6 +36,8 @@
 %.android-arm.elf: LDLIBS += -llog -lm -lc -lgcc
 
 %.ios-arm.macho: LDFLAGS += -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SYSROOT)
+
+%.ios-arm64.macho: LDFLAGS += -arch arm64 -isysroot $(IOS_SYSROOT)
 
 ifneq ($(findstring win32,$(TARGET)),)
 define link

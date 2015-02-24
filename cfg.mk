@@ -45,7 +45,7 @@ ifeq ($(TARGET),android-arm)
 	export NDK_TOOLS := $(shell ls -d $(NDK_HOME)/toolchains/arm-linux-androideabi-* | grep -v clang | sort -nr | head -1)/prebuilt/$(HOST)/bin
 endif
 
-ifeq ($(TARGET),ios-arm)
+ifneq ($(findstring ios-,$(TARGET)),)
 	export EXESUF := .$(TARGET).macho
 	export LIBSUF := .a
 
