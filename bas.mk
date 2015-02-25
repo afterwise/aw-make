@@ -5,7 +5,8 @@ export PLIST_ID_PREFIX ?= se.afterwi
 include $(AW_MAKE_PATH)/cfg.mk
 include $(AW_MAKE_PATH)/ld.mk
 
--include *.mk
+.PHONY: $(wildcard *.mk)
+-include $(wildcard *.mk)
 
 .PHONY: all
 all: $(addsuffix $(EXESUF), $(PROGRAMS))
