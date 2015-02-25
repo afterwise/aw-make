@@ -43,9 +43,15 @@ ifneq ($(findstring win32,$(TARGET)),)
 define link
 	$(LD) $(LDFLAGS) /OUT:$@ $(LDLIBS) $(LIBRARIES) $^
 endef
+define link-shared
+	$(LD) $(LDFLAGS) /DLL /OUT:$@.dll $^ $(LDLIBS)
+endef
 else ifneq ($(findstring darwin,$(TARGET)),)
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+endef
+define link-shared
+	$(LD) $(LDFLAGS) -shared -o lib$@.so $(addprefix -Wl,-force_load , $^) $(LDLIBS)
 endef
 PLIST_ID_PREFIX ?= unknown
 define link-bundle
@@ -61,11 +67,18 @@ define link-bundle
 			-- en.lproj/InfoPlist.strings)
 	touch $@
 endef
+else ifneq ($(findstring ios-,$(TARGET)),)
+define link
+	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+endef
+define link-shared
+	$(LD) $(LDFLAGS) -shared -o lib$@.so $(addprefix -Wl,-force_load , $^) $(LDLIBS)
+endef
 else
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -l, $(LIBRARIES))
 endef
-define link-bundle
+define link-shared
 	$(LD) $(LDFLAGS) -shared -o lib$@.so -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDLIBS)
 endef
 endif
