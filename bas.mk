@@ -29,16 +29,15 @@ RM_PROGRAM_BUNDLES = $(RM) $(PROGRAMS:%=lib%$(EXESUF).so)
 endif
 
 .PHONY: clean
-clean: extern/Makefile
-	$(MAKE) -C extern clean
+clean:
+	test -d extern && $(MAKE) -f $(AW_MAKE_PATH)/ext.mk -C extern clean
 	for dir in $(patsubst %.mk,%,$(wildcard *.mk)); do $(MAKE) -C $$dir -f $(AW_MAKE_PATH)/rm.mk clean; done
 	$(RM) $(addsuffix $(EXESUF), $(PROGRAMS))
 	$(RM_PROGRAM_BUNDLES)
 
 .PHONY: distclean
 distclean: clean
-	$(MAKE) -C extern distclean
-	rmdir extern
+	test -d extern && $(MAKE) -f $(AW_MAKE_PATH)/ext.mk -C extern distclean && rmdir extern
 
 .PHONY: recurse
 recurse:
