@@ -67,7 +67,7 @@ ifneq ($(REQUIRES),)
 
 .PRECIOUS: $(REQUIRES)
 $(REQUIRES):
-	$(MAKE) -C $(shell echo $@ | grep -Eo '^[^\/\\]+') $(shell echo $@ | sed -E 's/^[^\/\\]+[\/\\]//')
+	$(MAKE) -f $(AW_MAKE_PATH)/bas.mk -C $(shell echo $@ | grep -Eo '^[^\/\\]+') $(shell echo $@ | sed -E 's/^[^\/\\]+[\/\\]//')
 endif
 
 ifneq ($(findstring win32,$(TARGET)),)

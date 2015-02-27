@@ -12,12 +12,9 @@ include $(AW_MAKE_PATH)/ld.mk
 all: $(addsuffix $(EXESUF), $(PROGRAMS))
 
 .PRECIOUS: extern/%
-extern/%: extern/Makefile recurse
-	$(MAKE) -C extern $(subst extern/,,$@)
-
-extern/Makefile:
-	mkdir -p $(@D) && \
-	cp $(AW_MAKE_PATH)/ext.mk $@
+extern/%: recurse
+	test -d extern || mkdir extern
+	$(MAKE) -f $(AW_MAKE_PATH)/ext.mk -C extern $(subst extern/,,$@)
 
 .PRECIOUS: %$(LIBSUF)
 %$(LIBSUF): recurse
@@ -41,7 +38,6 @@ clean: extern/Makefile
 .PHONY: distclean
 distclean: clean
 	$(MAKE) -C extern distclean
-	rm -f extern/Makefile
 	rmdir extern
 
 .PHONY: recurse
