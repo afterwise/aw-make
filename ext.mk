@@ -22,8 +22,11 @@ libaw-%$(EXESUF)$(LIBSUF): aw-% recurse
 
 .PRECIOUS: aw-%
 aw-%:
-	test -d $@ || git clone ../../$@
-#	test -d $@ || git clone git@github.com:afterwise/$@.git
+ifneq ($(AW_CLONE_PATH),)
+	test -d $@ || git clone $(AW_CLONE_PATH)/$@
+else
+	test -d $@ || git clone git@github.com:afterwise/$@.git
+endif
 
 #### bullet3 ####
 
