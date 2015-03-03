@@ -1,5 +1,6 @@
 
 export AW_MAKE_PATH ?= $(shell pwd)/aw-make
+export AW_MAKE_FILE = $(AW_MAKE_PATH)/bas.mk
 export PLIST_ID_PREFIX ?= se.afterwi
 
 include $(AW_MAKE_PATH)/cfg.mk

@@ -1,4 +1,6 @@
 
+export AW_MAKE_FILE=$(AW_MAKE_PATH)/ext.mk
+
 define make-simple
 	$(MAKE) -C $< `test -e $</requires.mk && echo -f requires.mk` \
 		-f $(AW_MAKE_PATH)/cc.mk -f $(AW_MAKE_PATH)/ar.mk \
