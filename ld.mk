@@ -8,6 +8,7 @@
 %.lv2-ppu.elf: LD = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppuld
 %.lv2-spu.elf: LD = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
 %.android-arm.elf: LD = $(NDK_TOOLS)/arm-linux-androideabi-gcc
+%.android-x86.elf: LD = $(NDK_TOOLS)/i686-linux-android-gcc
 %.ios-arm.macho: LD = clang
 %.ios-arm64.macho: LD = clang
 
@@ -34,6 +35,10 @@
 %.android-arm.elf: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
 	-Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
 %.android-arm.elf: LDLIBS += -llog -lm -lc -lgcc
+
+%.android-x86.elf: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
+	-Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
+%.android-x86.elf: LDLIBS += -llog -lm -lc -lgcc
 
 %.ios-arm.macho: LDFLAGS += -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SYSROOT)
 

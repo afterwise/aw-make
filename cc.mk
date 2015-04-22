@@ -7,6 +7,7 @@
 %.lv2-ppu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppusnc
 %.lv2-spu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
 %.android-arm.elf.o: CC = $(NDK_TOOLS)/arm-linux-androideabi-gcc
+%.android-x86.elf.o: CC = $(NDK_TOOLS)/i686-linux-android-gcc
 %.ios-arm.macho.o: CC = clang
 %.ios-arm64.macho.o: CC = clang
 
@@ -34,12 +35,15 @@
 
 %.android-arm.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
 	-fstack-protector -fno-short-enums -fpic \
-	-march=armv7-a -mthumb-interwork -mfpu=neon -mfloat-abi=softfp \
-	-D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__ \
+	-march=armv7-a -mthumb-interwork -mfpu=vfp -mfloat-abi=softfp -D__ARM_ARCH_7__ \
+	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
+
+%.android-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
+	-fstack-protector -fno-short-enums -fpic \
 	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
 %.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror \
-	-target armv7-apple-ios -mfpu=neon -mfloat-abi=softfp \
+	-target armv7-apple-ios -mfpu=vfp -mfloat-abi=softfp \
 	-isysroot $(IOS_SYSROOT) $(CFLAGS)
 
 %.ios-arm64.macho.o: CFLAGS := -Wall -Wextra -Werror \
