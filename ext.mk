@@ -1,4 +1,6 @@
 
+export AW_MAKE_FILE=$(AW_MAKE_PATH)/ext.mk
+
 define make-simple
 	$(MAKE) -C $< `test -e $</requires.mk && echo -f requires.mk` \
 		-f $(AW_MAKE_PATH)/cc.mk -f $(AW_MAKE_PATH)/ar.mk \
@@ -20,8 +22,11 @@ libaw-%$(EXESUF)$(LIBSUF): aw-% recurse
 
 .PRECIOUS: aw-%
 aw-%:
-	test -d $@ || git clone ../../$@
-#	test -d $@ || git clone git@github.com:afterwise/$@.git
+ifneq ($(AW_CLONE_PATH),)
+	test -d $@ || git clone $(AW_CLONE_PATH)/$@
+else
+	test -d $@ || git clone git@github.com:afterwise/$@.git
+endif
 
 #### bullet3 ####
 
