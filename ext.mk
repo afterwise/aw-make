@@ -96,6 +96,26 @@ imgui:
 	( test -d imgui || git clone git@github.com:ocornut/imgui.git ) && \
 	echo "REQUIRES = aw-debug" > imgui/requires.mk
 
+#### llvm ####
+
+libLLVMMCJIT$(EXESUF)$(LIBSUF): llvm/build$(EXESUF)/Release+Asserts/lib/libLLVMMCJIT$(LIBSUF)
+	test -L $@ || ln -s $^ $@
+
+llvm/build$(EXESUF)/Release+Asserts/lib/libLLVMMCJIT$(LIBSUF): llvm
+	cd llvm/build$(EXESUF) && $(MAKE) && \
+	touch -c $@
+
+llvm: llvm-current.tar.xz
+	tar -xvf llvm-current.tar.xz && ln -s llvm-*.src llvm && \
+	mkdir llvm/build$(EXESUF) && cd llvm/build$(EXESUF) && ../configure && \
+	touch -c $@
+
+llvm-current.tar.xz: llvm.version
+	curl '-#' -o llvm-current.tar.xz "http://llvm.org/releases/`cat llvm.version`"
+
+llvm.version:
+	curl "-#" http://llvm.org/releases/download.html | grep -oE '(\d\.?)+\/llvm-(\d\.?)+src.tar.xz' | head -n1 > llvm.version
+
 #### murmurhash3 ####
 
 .PRECIOUS: murmurhash3
@@ -166,11 +186,14 @@ clean:
 		-exec $(RM) -r {}/build$(EXESUF) \;
 	find . -type d \( -name 'glew' \) \
 		-exec $(MAKE) -C {} clean \;
+	test ! -L llvm || \
+		( cd llvm/build$(EXESUF) && $(MAKE) clean )
 
 .PHONY: distclean
 distclean:
 	find -d . -depth 1 -type d \( -not -name contrib \) \
 		-exec $(RM) -r {} \;
+	$(RM) -f llvm llvm.version llvm-current.tar.xz
 
 .PHONY: recurse
 recurse:

@@ -1,0 +1,4 @@
+
+REQUIRES = \
+	../extern/llvm
+
