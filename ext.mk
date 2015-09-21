@@ -193,7 +193,7 @@ clean:
 distclean:
 	find -d . -depth 1 -type d \( -not -name contrib \) \
 		-exec $(RM) -r {} \;
-	$(RM) -f llvm llvm.version llvm-current.tar.xz
+	$(RM) llvm llvm.version llvm-current.tar.xz
 
 .PHONY: recurse
 recurse:

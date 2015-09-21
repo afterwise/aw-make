@@ -1,4 +1,4 @@
 
 REQUIRES = \
-	../extern/llvm
+	../extern/aw-debug
 
