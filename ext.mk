@@ -116,6 +116,13 @@ llvm-current.tar.xz: llvm.version
 llvm.version:
 	curl "-#" http://llvm.org/releases/download.html | grep -oE '(\d\.?)+\/llvm-(\d\.?)+src.tar.xz' | head -n1 > llvm.version
 
+#### miniz ####
+
+.PRECIOUS: miniz
+miniz:
+	svn checkout http://miniz.googlecode.com/svn/trunk/ miniz && \
+	find miniz -type f -not -name 'miniz.c' | xargs $(RM)
+
 #### murmurhash3 ####
 
 .PRECIOUS: murmurhash3
