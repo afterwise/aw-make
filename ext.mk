@@ -120,17 +120,19 @@ llvm.version:
 
 .PRECIOUS: miniz
 miniz:
-	svn checkout http://miniz.googlecode.com/svn/trunk/ miniz && \
-	find miniz -type f -not -name 'miniz.c' | xargs $(RM)
+	test -d miniz || \
+	( svn checkout http://miniz.googlecode.com/svn/trunk miniz && \
+	find miniz -depth 1 -type f -not -name 'miniz.c' -exec ${RM} {} \; )
 
 #### murmurhash3 ####
 
 .PRECIOUS: murmurhash3
 murmurhash3:
-	svn checkout http://smhasher.googlecode.com/svn/trunk/ murmurhash3 && \
+	test -d murmurhash3 || \
+	( svn checkout http://smhasher.googlecode.com/svn/trunk/ murmurhash3 && \
 	find murmurhash3 -type f -not -name 'MurmurHash3.*' | xargs $(RM) && \
 	sed 's/^inline/static inline/' murmurhash3/MurmurHash3.cpp > murmurhash3/MurmurHash3.c && \
-	$(RM) murmurhash3/MurmurHash3.cpp
+	$(RM) murmurhash3/MurmurHash3.cpp )
 
 #### nanovg ####
 
