@@ -16,38 +16,43 @@
 %.win32-x86.exe.o: CFLAGS := /WL /TP /Y- /Zl /MD /EHs-c- \
 	/GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN $(CFLAGS)
 
-%.darwin-x86.macho.o: CFLAGS := -Wall -Wextra -Werror \
-	-arch i386 -msse2 -fstrict-aliasing $(CFLAGS)
+%.darwin-x86.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-arch i386 -msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -flto $(CFLAGS)
 
-%.darwin-x86_64.macho.o: CFLAGS := -Wall -Wextra -Werror \
-	-arch x86_64 -msse2 -fstrict-aliasing $(CFLAGS)
+%.darwin-x86_64.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-arch x86_64 -msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -flto $(CFLAGS)
 
-%.linux-x86.elf.o: CFLAGS := -Wall -Wextra -Werror \
-	-msse2 -fstrict-aliasing -ffunction-sections -fdata-sections $(CFLAGS)
+%.linux-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections $(CFLAGS)
 
 %.lv2-ppu.elf.o: CFLAGS := -Xdiag=2 -Xquit=1 -Xfastlibc \
         -I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/ppu/include \
         -I$(SCE_PS3_ROOT)/target/ppu/include/vectormath/c $(CFLAGS)
 
-%.lv2-spu.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections -fpic \
+%.lv2-spu.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections -fpic \
 	-I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/spu/include \
 	-I$(SCE_PS3_ROOT)/target/spu/include/vectormath/c $(CFLAGS)
 
-%.android-arm.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
-	-fstack-protector -fno-short-enums -fpic \
+%.android-arm.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections \
+	-fstack-protector -fno-short-enums -fpic -flto \
 	-march=armv7-a -mthumb-interwork -mfpu=vfp -mfloat-abi=softfp -D__ARM_ARCH_7__ \
 	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
-%.android-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -ffunction-sections -fdata-sections \
-	-fstack-protector -fno-short-enums -fpic \
+%.android-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections \
+	-fstack-protector -fno-short-enums -fpic -flto \
 	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
-%.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror \
-	-target armv7-apple-ios -mfpu=vfp -mfloat-abi=softfp \
+%.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-ffast-math -fstrict-aliasing -fstrict-overflow \
+	-flto -target armv7-apple-ios -mfpu=vfp -mfloat-abi=softfp \
 	-isysroot $(IOS_SYSROOT) $(CFLAGS)
 
-%.ios-arm64.macho.o: CFLAGS := -Wall -Wextra -Werror \
-	-arch arm64 -isysroot $(IOS_SYSROOT) $(CFLAGS)
+%.ios-arm64.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-ffast-math -fstrict-aliasing -fstrict-overflow \
+	-flto -arch arm64 -isysroot $(IOS_SYSROOT) $(CFLAGS)
 
 # common compile rules
 

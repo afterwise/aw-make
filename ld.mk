@@ -19,10 +19,10 @@
         psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
         msvcrt.lib MSVCPRT.LIB
 
-%.darwin-x86.macho: LDFLAGS += -Wl,-dead_strip -Wl,-arch -Wl,i386
-%.darwin-x86_64.macho: LDFLAGS += -Wl,-dead_strip -Wl,-arch -Wl,x86_64
+%.darwin-x86.macho: LDFLAGS += -flto -Wl,-dead_strip -Wl,-arch -Wl,i386
+%.darwin-x86_64.macho: LDFLAGS += -flto -Wl,-dead_strip -Wl,-arch -Wl,x86_64
 
-%.linux-x86.elf: LDFLAGS += -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
+%.linux-x86.elf: LDFLAGS += -flto -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
 %.linux-x86.elf: LDLIBS += -lm -lc -lgcc
 
 %.lv2-ppu.elf: LDFLAGS += --no-exceptions --strip-unused --strip-unused-data --strip-duplicates --sn-no-dtors \
@@ -33,16 +33,15 @@
 %.lv2-spu.elf: LDLIBS += -lm -latomic -lgcm_spu -ldma
 
 %.android-arm.elf: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
-	-Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
+	-flto -Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
 %.android-arm.elf: LDLIBS += -llog -lm -lc -lgcc
 
 %.android-x86.elf: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
-	-Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
+	-flto -Wl,--no-undefined -Wl,--gc-sections -shared -Bsymbolic -nostdlib
 %.android-x86.elf: LDLIBS += -llog -lm -lc -lgcc
 
-%.ios-arm.macho: LDFLAGS += -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SYSROOT)
-
-%.ios-arm64.macho: LDFLAGS += -arch arm64 -isysroot $(IOS_SYSROOT)
+%.ios-arm.macho: LDFLAGS += -flto -target armv7-apple-ios -mfloat-abi=softfp -isysroot $(IOS_SYSROOT)
+%.ios-arm64.macho: LDFLAGS += -flto -arch arm64 -isysroot $(IOS_SYSROOT)
 
 ifneq ($(findstring win32,$(TARGET)),)
 define link
