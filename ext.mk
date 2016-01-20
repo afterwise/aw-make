@@ -215,6 +215,7 @@ distclean:
 	find -d . -depth 1 -type d \( -not -name contrib \) \
 		-exec $(RM) -r {} \;
 	$(RM) llvm llvm.version llvm-current.tar.xz
+	$(RM) tinf tinf-default.tar.gz
 
 .PHONY: recurse
 recurse:
