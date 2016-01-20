@@ -106,15 +106,15 @@ llvm/build$(EXESUF)/Release+Asserts/lib/libLLVMMCJIT$(LIBSUF): llvm
 	touch -c $@
 
 llvm: llvm-current.tar.xz
-	tar -xvf llvm-current.tar.xz && ln -s llvm-*.src llvm && \
+	tar -xvf $^ && ln -s llvm-*.src llvm && \
 	mkdir llvm/build$(EXESUF) && cd llvm/build$(EXESUF) && ../configure && \
 	touch -c $@
 
 llvm-current.tar.xz: llvm.version
-	curl '-#' -o llvm-current.tar.xz "http://llvm.org/releases/`cat llvm.version`"
+	curl '-#' -o $@ "http://llvm.org/releases/`cat llvm.version`"
 
 llvm.version:
-	curl "-#" http://llvm.org/releases/download.html | grep -oE '(\d\.?)+\/llvm-(\d\.?)+src.tar.xz' | head -n1 > llvm.version
+	curl "-#" http://llvm.org/releases/download.html | grep -oE '(\d\.?)+\/llvm-(\d\.?)+src.tar.xz' | head -n1 > $@
 
 #### miniz ####
 
@@ -123,6 +123,18 @@ miniz:
 	test -d miniz || \
 	( svn checkout http://miniz.googlecode.com/svn/trunk miniz && \
 	find miniz -depth 1 -type f -not -name 'miniz.c' -exec ${RM} {} \; )
+
+#### tinf ####
+
+libtinf$(EXESUF)$(LIBSUF): tinf recurse
+	CFLAGS='-Wno-unused-parameter' $(make-simple)
+
+.PRECIOUS: tinf
+tinf: tinf-default.tar.gz
+	test -L $@ || ( tar -xvf $^ && ln -s jibsen-tinf-*/src tinf )
+
+tinf-default.tar.gz:
+	curl '-#' -o $@ "https://bitbucket.org/jibsen/tinf/get/default.tar.gz"
 
 #### murmurhash3 ####
 
