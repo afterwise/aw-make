@@ -1,5 +1,5 @@
 
-SOURCES := $(shell echo $(TARGET) | sed -E 's/([a-z0-9]+)\-([a-z0-9]+).*/(\\w|\\-)+(\\-(\1|\2))?(\\.c(pp)?|\\.m)/')
+SOURCES := $(shell echo $(TARGET) | sed -E 's/([a-z0-9]+)\-([a-z0-9]+).*/\\w+(\\-(\1|\2))?(\\.c(pp)?|\\.m)/')
 SOURCES := $(shell ls | grep -xE '$(SOURCES)')
 
 OBJECTS := $(patsubst %.c, %$(EXESUF).o, $(SOURCES))
