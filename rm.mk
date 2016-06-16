@@ -1,8 +1,11 @@
 
-LITTER += *$(EXESUF).dep *$(EXESUF).o *$(EXESUF)$(LIBSUF)
+LITTER += *$(EXESUF).dep *$(EXESUF).o
 
 ifneq ($(LIBSUF),)
 LITTER += *$(EXESUF)$(LIBSUF)
+endif
+ifneq ($(SOSUF),)
+LITTER += *$(EXESUF)$(SOSUF)
 endif
 
 .PHONY: clean

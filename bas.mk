@@ -23,9 +23,11 @@ extern/%: recurse
 		-f $(AW_MAKE_PATH)/cc.mk -f $(AW_MAKE_PATH)/ar.mk \
 		$(subst $(@D)/,,$@)
 
-RM_PROGRAM_BUNDLES = $(RM) -r $(PROGRAMS:%=lib%$(EXESUF).so)
 ifneq ($(findstring darwin, $(TARGET)),)
-RM_PROGRAM_BUNDLES += $(addsuffix .bundle, $(PROGRAMS))
+RM_PROGRAM_BUNDLES = $(RM) -r $(addsuffix .bundle, $(PROGRAMS))
+endif
+ifneq ($(SOSUF),)
+RM_SHARED_OBJECTS = $(RM) *$(EXESUF)$(SOSUF)
 endif
 
 .PHONY: clean
@@ -34,6 +36,7 @@ clean:
 	for dir in $(patsubst %.mk,%,$(wildcard *.mk)); do $(MAKE) -C $$dir -f $(AW_MAKE_PATH)/rm.mk clean; done
 	$(RM) $(addsuffix $(EXESUF), $(PROGRAMS))
 	$(RM_PROGRAM_BUNDLES)
+	$(RM_SHARED_OBJECTS)
 
 .PHONY: distclean
 distclean: clean
