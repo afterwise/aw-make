@@ -8,6 +8,7 @@ ifneq ($(findstring CYGWIN,$(HOST)),)
 	export HOSTEXESUF := .$(HOST).exe
 	export EXESUF := .$(TARGET).exe
 	export LIBSUF := .lib
+	export SOSUF := .dll
 endif
 
 ifeq ($(HOST),Darwin)
@@ -16,6 +17,7 @@ ifeq ($(HOST),Darwin)
 	export HOSTEXESUF := .$(HOST).macho
 	export EXESUF := .$(TARGET).macho
 	export LIBSUF := .a
+	export SOSUF := .so
 endif
 
 ifeq ($(HOST),Linux)
@@ -24,21 +26,25 @@ ifeq ($(HOST),Linux)
 	export HOSTEXESUF := .$(HOST).elf
 	export EXESUF := .$(TARGET).elf
 	export LIBSUF := .a
+	export SOSUF := .so
 endif
 
 ifeq ($(TARGET),lv2-ppu)
 	export EXESUF := .$(TARGET).elf
 	export LIBSUF := .a
+	export SOSUF := .so
 endif
 
 ifeq ($(TARGET),lv2-spu)
 	export EXESUF := .$(TARGET).elf
 	export LIBSUF := .a
+	export SOSUF := .so
 endif
 
 ifeq ($(TARGET),android-arm)
 	export EXESUF := .$(TARGET).elf
 	export LIBSUF := .a
+	export SOSUF := .so
 
 	export NDK_HOME ?= /usr/local/android
 	export NDK_SYSROOT := $(NDK_HOME)/platforms/$(shell ls $(NDK_HOME)/platforms | sort -nrk1.9 | head -1)/arch-arm
@@ -48,6 +54,7 @@ endif
 ifeq ($(TARGET),android-x86)
 	export EXESUF := .$(TARGET).elf
 	export LIBSUF := .a
+	export SOSUF := .so
 
 	export NDK_HOME ?= /usr/local/android
 	export NDK_SYSROOT := $(NDK_HOME)/platforms/$(shell ls $(NDK_HOME)/platforms | sort -nrk1.9 | head -1)/arch-x86
@@ -57,6 +64,7 @@ endif
 ifneq ($(findstring ios-,$(TARGET)),)
 	export EXESUF := .$(TARGET).macho
 	export LIBSUF := .a
+	export SOSUF := .so
 
 	export IOS_HOME := $(shell xcrun --sdk iphoneos --show-sdk-platform-path)
 	export IOS_SYSROOT := $(shell xcrun --sdk iphoneos --show-sdk-path)

@@ -1,4 +1,6 @@
 
+, := ,
+
 # linkers
 
 %.win32-x86.exe: LD = "$(VCINSTALLDIR)/bin/link" /nologo
@@ -48,14 +50,14 @@ define link
 	$(LD) $(LDFLAGS) /OUT:$@ $(LDLIBS) $(LIBRARIES) $^
 endef
 define link-shared
-	$(LD) $(LDFLAGS) /DLL /OUT:$@.dll $^ $(LDLIBS)
+	$(LD) $(LDFLAGS) /DLL /OUT:$@ $^ $(LDLIBS)
 endef
 else ifneq ($(findstring darwin,$(TARGET)),)
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o lib$@.so $(addprefix -Wl,-force_load , $^) $(LDLIBS)
+	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 PLIST_ID_PREFIX ?= unknown
 define link-bundle
@@ -76,14 +78,14 @@ define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o lib$@.so $(addprefix -Wl,-force_load , $^) $(LDLIBS)
+	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 else
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -l, $(LIBRARIES))
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o lib$@.so -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDLIBS)
+	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDLIBS) $(addprefix -l, $(LIBRARIES))
 endef
 endif
 
