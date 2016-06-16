@@ -23,10 +23,9 @@ extern/%: recurse
 		-f $(AW_MAKE_PATH)/cc.mk -f $(AW_MAKE_PATH)/ar.mk \
 		$(subst $(@D)/,,$@)
 
+RM_PROGRAM_BUNDLES = $(RM) -r $(PROGRAMS:%=lib%$(EXESUF).so)
 ifneq ($(findstring darwin, $(TARGET)),)
-RM_PROGRAM_BUNDLES = $(RM) -r $(addsuffix .bundle, $(PROGRAMS))
-else
-RM_PROGRAM_BUNDLES = $(RM) $(PROGRAMS:%=lib%$(EXESUF).so)
+RM_PROGRAM_BUNDLES += $(addsuffix .bundle, $(PROGRAMS))
 endif
 
 .PHONY: clean
