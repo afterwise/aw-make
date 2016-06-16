@@ -121,8 +121,9 @@ llvm.version:
 .PRECIOUS: miniz
 miniz:
 	test -d miniz || \
-	( svn checkout http://miniz.googlecode.com/svn/trunk miniz && \
-	find miniz -depth 1 -type f -not -name 'miniz.c' -exec ${RM} {} \; )
+	( git clone https://github.com/tessel/miniz.git && \
+	find miniz -depth 1 -type f -not -name 'miniz.c' -exec ${RM} {} \; && \
+	mv miniz/miniz.c miniz/miniz.h )
 
 #### tinf ####
 
