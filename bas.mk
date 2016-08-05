@@ -9,8 +9,10 @@ include $(AW_MAKE_PATH)/ld.mk
 .PHONY: $(wildcard *.mk)
 -include $(wildcard *.mk)
 
+PRODUCTS := $(addsuffix $(EXESUF), $(PROGRAMS)) $(PRODUCTS)
+
 .PHONY: all
-all: $(addsuffix $(EXESUF), $(PROGRAMS))
+all: $(PRODUCTS)
 
 .PRECIOUS: extern/%
 extern/%: recurse
