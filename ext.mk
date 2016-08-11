@@ -25,7 +25,7 @@ aw-%:
 ifneq ($(AW_CLONE_PATH),)
 	test -d $@ || git clone $(AW_CLONE_PATH)/$@
 else
-	test -d $@ || git clone git@github.com:afterwise/$@.git
+	test -d $@ || git clone https://github.com/afterwise/$@.git
 endif
 
 #### bullet3 ####
