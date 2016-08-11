@@ -61,15 +61,16 @@ define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $<) $(filter-out $<,$^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 PLIST_ID_PREFIX ?= unknown
 define link-bundle
 	mkdir -p $(subst $(EXESUF),,$@).bundle/Contents/MacOS
 	$(AW_MAKE_PATH)/plistgen.sh macosx bundle $(PLIST_ID_PREFIX) $(subst $(EXESUF),,$@)
-	$(LD) $(LDFLAGS) -o $(subst $(EXESUF),,$@).bundle/Contents/MacOS/$(subst $(EXESUF),,$@) \
-		$(addprefix -force_load , $^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) \
-		$(addprefix -l, $(LIBRARIES)) -bundle
+	$(LD) $(LDFLAGS) -bundle \
+		-o $(subst $(EXESUF),,$@).bundle/Contents/MacOS/$(subst $(EXESUF),,$@) \
+		$(addprefix -force_load , $<) $(filter-out $<,$^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) \
+		$(addprefix -l, $(LIBRARIES))
 	test ! -e en.lproj/InfoPlist.strings || \
 		(mkdir -p $(subst $(EXESUF),,$@).bundle/Contents/Resources/en.lproj && \
 		plutil -convert binary1 \
@@ -82,14 +83,14 @@ define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $<) $(filter-out $<,$^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
 endef
 else
 define link
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -l, $(LIBRARIES))
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDLIBS) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< -Wl,--no-whole-archive $(filter-out $<,$^) $(LDLIBS) $(addprefix -l, $(LIBRARIES))
 endef
 endif
 
