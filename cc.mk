@@ -36,23 +36,23 @@
 
 %.android-arm.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections \
-	-fstack-protector -fno-short-enums -fpic -flto \
-	-march=armv7-a -mthumb-interwork -mfpu=vfp -mfloat-abi=softfp -D__ARM_ARCH_7__ \
+	-fstack-protector -fno-short-enums -fpic \
+	-march=armv7-a -mthumb -mfpu=neon -mfloat-abi=softfp \
 	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
 %.android-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections \
-	-fstack-protector -fno-short-enums -fpic -flto \
+	-fstack-protector -fno-short-enums -fpic \
 	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
 %.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-ffast-math -fstrict-aliasing -fstrict-overflow \
-	-flto -target armv7-apple-ios -mfpu=vfp -mfloat-abi=softfp \
+	-target armv7-apple-ios -mfpu=neon -mfloat-abi=softfp \
 	-isysroot $(IOS_SYSROOT) $(CFLAGS)
 
 %.ios-arm64.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-ffast-math -fstrict-aliasing -fstrict-overflow \
-	-flto -arch arm64 -isysroot $(IOS_SYSROOT) $(CFLAGS)
+	-arch arm64 -isysroot $(IOS_SYSROOT) $(CFLAGS)
 
 # common compile rules
 
