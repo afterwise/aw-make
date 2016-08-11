@@ -121,7 +121,7 @@ llvm.version:
 .PRECIOUS: miniz
 miniz:
 	test -d miniz || \
-	( git clone https://github.com/tessel/miniz.git && \
+	( git clone https://github.com/richgel999/miniz.git && \
 	find miniz -depth 1 -type f -not -name 'miniz.c' -exec ${RM} {} \; && \
 	mv miniz/miniz.c miniz/miniz.h )
 
