@@ -25,6 +25,12 @@
 %.linux-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections $(CFLAGS)
 
+%.linux-x86_64.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections $(CFLAGS)
+
+%.mingw-x86.exe.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
+	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections $(CFLAGS)
+
 %.lv2-ppu.elf.o: CFLAGS := -Xdiag=2 -Xquit=1 -Xfastlibc \
         -I$(SCE_PS3_ROOT)/target/common/include -I$(SCE_PS3_ROOT)/target/ppu/include \
         -I$(SCE_PS3_ROOT)/target/ppu/include/vectormath/c $(CFLAGS)

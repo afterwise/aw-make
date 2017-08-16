@@ -23,3 +23,7 @@ OBJECTS := $(patsubst %.cpp, %$(EXESUF).o, $(OBJECTS))
 %.elf.a: $(OBJECTS)
 	$(AR) -r $@ $?
 
+.PRECIOUS: %.exe.a
+%.exe.a: $(OBJECTS)
+	$(AR) -r $@ $?
+

@@ -11,6 +11,15 @@ ifneq ($(findstring CYGWIN,$(HOST)),)
 	export SOSUF := .dll
 endif
 
+ifneq ($(findstring MINGW,$(HOST)),)
+	export HOST := mingw-$(HOST_ARCH)
+	export TARGET ?= $(HOST)
+	export HOSTEXESUF := .$(HOST).exe
+	export EXESUF := .$(TARGET).exe
+	export LIBSUF := .a
+	export SOSUF := .so
+endif
+
 ifeq ($(HOST),Darwin)
 	export HOST := darwin-$(HOST_ARCH)
 	export TARGET ?= $(HOST)

@@ -5,7 +5,7 @@ define make-simple
 	$(MAKE) -C $< `test -e $</requires.mk && echo -f requires.mk` \
 		-f $(AW_MAKE_PATH)/cc.mk -f $(AW_MAKE_PATH)/ar.mk \
 		$@ && \
-	( test -L $@ || ln -s $</$@ $@ )
+	( test $</$@ -ot $@ || cp $</$@ $@ )
 endef
 
 define cmake

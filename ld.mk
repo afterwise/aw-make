@@ -7,7 +7,9 @@
 %.darwin-x86.macho %.darwin-x86.macho.so: LD = clang
 %.darwin-x86_64.macho %.darwin-x86_64.macho.so: LD = clang
 %.linux-x86.elf %.linux-x86.elf.so: LD = $(CC)
-%.linux-x86_64.elf %.linux-x86_64.elf.so: LD = $(CC)
+%.linux-x86_64.elf %.linux-x86_64.exe.so: LD = $(CC)
+%.mingw-x86.exe %.mingw-x86.elf.so: LD = $(CC)
+%.mingw-x86_64.exe %.mingw-x86_64.exe.so: LD = $(CC)
 %.lv2-ppu.elf %.lv2-ppu.elf.so: LD = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppuld
 %.lv2-spu.elf %.lv2-spu.elf.so: LD = $(SCE_PS3_ROOT)/host-win32/spu/bin/spu-lv2-gcc
 %.android-arm.elf %.android-arm.elf.so: LD = $(NDK_TOOLS)/arm-linux-androideabi-gcc
@@ -30,6 +32,9 @@
 
 %.linux-x86_64.elf %.linux-x86_64.elf.so: LDFLAGS += -flto -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
 %.linux-x86_64.elf %.linux-x86_64.elf.so: LDLIBS += -lm -lc -lgcc
+
+%.mingw-x86.exe %.mingw-x86.exe.so: LDFLAGS += -flto -Wl,--gc-sections -Wl,--no-undefined -nodefaultlibs
+%.mingw-x86.exe %.mingw-x86.exe.so: LDLIBS += -lm -lc -lgcc
 
 %.lv2-ppu.elf %.lv2-ppu.elf.so: LDFLAGS += --no-exceptions --strip-unused --strip-unused-data --strip-duplicates --sn-no-dtors \
         --no-standard-libraries --use-libcs -oformat=fself -L$(SCE_PS3_ROOT)/target/ppu/lib
