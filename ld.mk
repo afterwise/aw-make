@@ -19,10 +19,10 @@
 
 # linker flags
 
-%.win32-x86.exe %.win32-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO /LIBPATH:ext/windows/lib
+%.win32-x86.exe %.win32-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
 %.win32-x86.exe %.win32-x86.exe.dll: LDLIBS += user32.lib kernel32.lib \
-        psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
-        msvcrt.lib MSVCPRT.LIB
+	psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
+	msvcrt.lib MSVCPRT.LIB
 
 %.darwin-x86.macho %.darwin-x86.macho.so: LDFLAGS += -flto -Wl,-dead_strip -Wl,-arch -Wl,i386
 %.darwin-x86_64.macho %.darwin-x86_64.macho.so: LDFLAGS += -flto -Wl,-dead_strip -Wl,-arch -Wl,x86_64
@@ -37,41 +37,46 @@
 %.mingw-x86.exe %.mingw-x86.exe.so: LDLIBS += -lm -lc -lgcc
 
 %.lv2-ppu.elf %.lv2-ppu.elf.so: LDFLAGS += --no-exceptions --strip-unused --strip-unused-data --strip-duplicates --sn-no-dtors \
-        --no-standard-libraries --use-libcs -oformat=fself -L$(SCE_PS3_ROOT)/target/ppu/lib
+	--no-standard-libraries --use-libcs -oformat=fself -L$(SCE_PS3_ROOT)/target/ppu/lib
 %.lv2-ppu.elf %.lv2-ppu.elf.so: LDLIBS += -lspurs_stub -lsysutil_stub -lfs_stub -lio_stub -lsync_stub -lsysmodule_stub -lm -lcs -llv2_stub
 
 %.lv2-spu.elf %.lv2-spu.elf.so: LDFLAGS += -Wl,--gc-sections -Wl,--no-undefined -Wl,-q -mspurs-job -nodefaultlibs
 %.lv2-spu.elf %.lv2-spu.elf.so: LDLIBS += -lm -latomic -lgcm_spu -ldma
 
 %.android-arm.elf %.android-arm.elf.so: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
-	-march=armv7-a -Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,--gc-sections -Bsymbolic -nostdlib
+	-fstack-protector -fpic -march=armv7-a -Wl,--fix-cortex-a8 \
+	-Wl,--no-undefined -Wl,--gc-sections -Bsymbolic -nostdlib
 %.android-arm.elf %.android-arm.elf.so: LDLIBS += -llog -lm -lc -lgcc
 
 %.android-x86.elf %.android-x86.elf.so: LDFLAGS += --sysroot=$(NDK_SYSROOT) \
-	-Wl,--no-undefined -Wl,--gc-sections -Bsymbolic -nostdlib
+	-mstackrealign -fpic -Wl,--no-undefined -Wl,--gc-sections -Bsymbolic -nostdlib
 %.android-x86.elf %.android-x86.elf.so: LDLIBS += -llog -lm -lc -lgcc
 
 %.ios-arm.macho %.ios-arm.macho.so: LDFLAGS += -target armv7-apple-ios -isysroot $(IOS_SYSROOT)
 %.ios-arm64.macho %.ios-arm64.macho.so: LDFLAGS += -arch arm64 -isysroot $(IOS_SYSROOT)
 
+# link win32
+
 ifneq ($(findstring win32,$(TARGET)),)
 define link
-	$(LD) $(LDFLAGS) /OUT:$@ $(LDLIBS) $(LIBRARIES) $^
+	$(LD) $(LDFLAGS) /OUT:$@ $^ $(LIBRARIES) $(LDLIBS)
 endef
 define link-shared
 	$(LD) $(LDFLAGS) /DLL /OUT:$@ $^ $(LDLIBS)
 endef
+
+# link darwin
+
 else ifneq ($(findstring darwin,$(TARGET)),)
 define link
-	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -o $@ $^ $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $<) $(filter-out $<,$^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $<) $(filter-out $<,$^) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
 endef
-PLIST_ID_PREFIX ?= unknown
 define link-bundle
 	mkdir -p $(subst $(EXESUF),,$@).bundle/Contents/MacOS
-	$(AW_MAKE_PATH)/plistgen.sh macosx bundle $(PLIST_ID_PREFIX) $(subst $(EXESUF),,$@)
+	$(AW_MAKE_PATH)/plistgen.sh macosx bundle $(BUNDLE_PREFIX) $(subst $(EXESUF),,$@)
 	$(LD) $(LDFLAGS) -bundle \
 		-o $(subst $(EXESUF),,$@).bundle/Contents/MacOS/$(subst $(EXESUF),,$@) \
 		$(addprefix -force_load , $<) $(filter-out $<,$^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) \
@@ -83,19 +88,63 @@ define link-bundle
 			-- en.lproj/InfoPlist.strings)
 	touch $@
 endef
+
+# link android
+
+else ifneq ($(findstring android-,$(TARGET)),)
+define link
+	$(LD) $(LDFLAGS) -o $@ $^ $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
+endef
+define link-shared
+	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< -Wl,--no-whole-archive $(filter-out $<,$^) $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
+endef
+define create-apk-lib1 =
+	mkdir -p .$(1)/libs/$(3) && cd .$(1)/libs/$(3) && ln -s ../../../$(2)
+endef
+ifeq ($(subst android-,,$(TARGET)),arm)
+define create-apk-lib =
+	$(call create-apk-lib1,$(1),$(2),armeabi-v7a)
+endef
+else ifeq ($(subst android-,,$(TARGET)),arm64)
+define create-apk-lib =
+	$(call create-apk-lib1,$(1),$(2),arm64-v8a)
+endef
+else ifeq ($(subst android-,,$(TARGET)),x86)
+define create-apk-lib =
+	$(call create-apk-lib1,$(1),$(2),x86)
+endef
+else ifeq ($(subst android-,,$(TARGET)),x86_64)
+define create-apk-lib =
+	$(call create-apk-lib1,$(1),$(2),x86_64)
+endef
+endif
+define create-apk
+	$(call create-apk-lib,$@,$<)
+	$(AW_MAKE_PATH)/androidgen.sh .$@ $(SDK_VERSION) $(BUNDLE_PREFIX) \
+		$(subst $(EXESUF)$(SOSUF).apk,,$@) $(subst lib,,$(subst $(SOSUF),,$<))
+	winpty $(SDK_HOME)/tools/android.bat update project -p .$@ \
+		-t android-$(SDK_VERSION) -n $(subst $(EXESUF)$(SOSUF).apk,,$@)
+	cd .$@ && JAVA_HOME=`cygpath -m $(JAVA_HOME)` winpty ant.bat debug
+endef
+
+# link ios
+
 else ifneq ($(findstring ios-,$(TARGET)),)
 define link
-	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -o $@ $^ $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $<) $(filter-out $<,$^) $(LDLIBS) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -shared -o $@ $(addprefix -Wl$(,)-force_load , $<) $(filter-out $<,$^) $(addprefix -framework , $(FRAMEWORKS)) $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
 endef
+
+# link default
+
 else
 define link
-	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -o $@ $^ $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
 endef
 define link-shared
-	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< -Wl,--no-whole-archive $(filter-out $<,$^) $(LDLIBS) $(addprefix -l, $(LIBRARIES))
+	$(LD) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $< -Wl,--no-whole-archive $(filter-out $<,$^) $(addprefix -l, $(LIBRARIES)) $(LDLIBS)
 endef
 endif
 

@@ -1,7 +1,7 @@
 
 export AW_MAKE_PATH ?= $(shell pwd)/aw-make
 export AW_MAKE_FILE = $(AW_MAKE_PATH)/bas.mk
-export PLIST_ID_PREFIX ?= se.afterwi
+export BUNDLE_PREFIX ?= noname
 
 include $(AW_MAKE_PATH)/cfg.mk
 include $(AW_MAKE_PATH)/ld.mk
@@ -28,6 +28,9 @@ extern/%: recurse
 ifneq ($(findstring darwin, $(TARGET)),)
 RM_PROGRAM_BUNDLES = $(RM) -r $(addsuffix .bundle, $(PROGRAMS))
 endif
+ifneq ($(findstring android, $(TARGET)),)
+RM_PRODUCT_APKS = $(RM) -r $(addprefix ., $(PRODUCTS))
+endif
 ifneq ($(SOSUF),)
 RM_SHARED_OBJECTS = $(RM) *$(EXESUF)$(SOSUF)
 endif
@@ -38,6 +41,7 @@ clean:
 	for dir in $(patsubst %.mk,%,$(wildcard *.mk)); do $(MAKE) -C $$dir -f $(AW_MAKE_PATH)/rm.mk clean; done
 	$(RM) $(addsuffix $(EXESUF), $(PROGRAMS))
 	$(RM_PROGRAM_BUNDLES)
+	$(RM_PRODUCT_APKS)
 	$(RM_SHARED_OBJECTS)
 
 .PHONY: distclean

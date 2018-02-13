@@ -48,7 +48,7 @@
 
 %.android-x86.elf.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -ffunction-sections -fdata-sections \
-	-fstack-protector -fno-short-enums -fpic \
+	-fno-short-enums -fpic \
 	--sysroot=$(NDK_SYSROOT) $(CFLAGS)
 
 %.ios-arm.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
