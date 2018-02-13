@@ -3,7 +3,8 @@
 
 # linkers
 
-%.win32-x86.exe %.win32-x86.exe.dll: LD = "$(VCINSTALLDIR)/bin/link" /nologo
+%.win32-x86.exe %.win32-x86.exe.dll: LD = MSYS_NO_PATHCONV=1 "$(VCINSTALLDIR)\bin\link" /nologo
+%.win32-x86_64.exe %.win32-x86_64.exe.dll: LD = MSYS_NO_PATHCONV=1 "$(VCINSTALLDIR)\bin\link" /nologo
 %.darwin-x86.macho %.darwin-x86.macho.so: LD = clang
 %.darwin-x86_64.macho %.darwin-x86_64.macho.so: LD = clang
 %.linux-x86.elf %.linux-x86.elf.so: LD = $(CC)

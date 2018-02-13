@@ -11,6 +11,8 @@ include $(AW_MAKE_PATH)/ld.mk
 
 PRODUCTS := $(addsuffix $(EXESUF), $(PROGRAMS)) $(PRODUCTS)
 
+$(warning -- $(PRODUCTS) --)
+
 .PHONY: all
 all: $(PRODUCTS)
 

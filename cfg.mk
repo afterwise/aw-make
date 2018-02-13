@@ -12,12 +12,12 @@ ifneq ($(findstring CYGWIN,$(HOST)),)
 endif
 
 ifneq ($(findstring MINGW,$(HOST)),)
-	export HOST := mingw-$(HOST_ARCH)
+	export HOST := win32-$(HOST_ARCH)
 	export TARGET ?= $(HOST)
 	export HOSTEXESUF := .$(HOST).exe
 	export EXESUF := .$(TARGET).exe
-	export LIBSUF := .a
-	export SOSUF := .so
+	export LIBSUF := .lib
+	export SOSUF := .dll
 endif
 
 ifeq ($(HOST),Darwin)

@@ -1,7 +1,8 @@
 
 # compilers
 
-%.win32-x86.exe.o: CC = "$(VCINSTALLDIR)/bin/cl" /nologo
+%.win32-x86.exe.o: CC = MSYS_NO_PATHCONV=1 "$(VCINSTALLDIR)\bin\cl" /nologo
+%.win32-x86_64.exe.o: CC = MSYS_NO_PATHCONV=1 "$(VCINSTALLDIR)\bin\cl" /nologo
 %.darwin-x86.macho.o: CC = clang
 %.darwin-x86_64.macho.o: CC = clang
 %.lv2-ppu.elf.o: CC = $(SCE_PS3_ROOT)/host-win32/sn/bin/ps3ppusnc
@@ -14,7 +15,8 @@
 # compiler flags
 
 %.win32-x86.exe.o: CFLAGS := /WL /TP /Y- /Zl /MD /EHs-c- \
-	/GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN $(CFLAGS)
+	/GR- /GF /Gm- /GL- /fp:fast /arch:SSE2 /DWIN32_LEAN_AND_MEAN \
+	/I$(VCINSTALLDIR)\include $(CFLAGS)
 
 %.darwin-x86.macho.o: CFLAGS := -Wall -Wextra -Werror -Wshadow -Wno-missing-field-initializers \
 	-arch i386 -msse2 -ffast-math -fstrict-aliasing -fstrict-overflow -flto $(CFLAGS)
@@ -88,7 +90,7 @@ endif
 ifneq ($(findstring win32,$(TARGET)),)
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
-	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) $(addprefix /D, $(DEFINES)) /Fo$@ /c $<
+	$(CC) $(CFLAGS) $(addprefix /I, $(subst /,\\,$(INCLUDES))) $(addprefix /D, $(DEFINES)) /Fo$@ /c $<
 else
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
