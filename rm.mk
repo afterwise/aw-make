@@ -1,5 +1,5 @@
 
-LITTER += *$(EXESUF).dep *$(EXESUF).o
+LITTER += *$(EXESUF).dep *$(EXESUF).pdb *$(EXESUF).o
 
 ifneq ($(LIBSUF),)
 LITTER += *$(EXESUF)$(LIBSUF)

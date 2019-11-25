@@ -20,11 +20,11 @@
 
 # linker flags
 
-%.windows-x86.exe %.windows-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
+%.windows-x86.exe %.windows-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /WX /INCREMENTAL:NO
 %.windows-x86.exe %.windows-x86.exe.dll: LDLIBS += \
 	user32.lib kernel32.lib psapi.lib xinput.lib winmm.lib msvcrt.lib MSVCPRT.LIB
 
-%.windows-x64.exe %.windows-x64.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
+%.windows-x64.exe %.windows-x64.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /WX /INCREMENTAL:NO
 %.windows-x64.exe %.windows-x64.exe.dll: LDLIBS += \
 	user32.lib kernel32.lib psapi.lib xinput.lib winmm.lib msvcrt.lib MSVCPRT.LIB
 

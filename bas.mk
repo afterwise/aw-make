@@ -40,7 +40,7 @@ ifneq ($(findstring android, $(TARGET)),)
 RM_PRODUCT_APKS = $(RM) -r $(addprefix ., $(PRODUCTS))
 endif
 ifneq ($(SOSUF),)
-RM_SHARED_OBJECTS = $(RM) *$(EXESUF)$(SOSUF)
+RM_SHARED_OBJECTS = $(RM) *$(EXESUF)$(SOSUF) *$(EXESUF).pdb *$(EXESUF).exp *$(EXESUF).lib
 endif
 ifneq ($(PROGRAMS),)
 RM_PROGRAMS = $(RM) $(addsuffix $(EXESUF), $(PROGRAMS))
