@@ -91,7 +91,7 @@ $(REQUIRES):
 	$(MAKE) -f $(AW_MAKE_FILE) -C $(shell echo $@ | grep -Eo '^[^\/\\]+') $(shell echo $@ | sed -E 's/^[^\/\\]+[\/\\]//')
 endif
 
-ifneq ($(findstring Windows,$(OS)),)
+ifneq ($(findstring windows,$(TARGET)),)
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
 	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) $(addprefix /D, $(DEFINES)) /Fo$@ /c $<
