@@ -1,5 +1,13 @@
 
-export AW_MAKE_PATH ?= $(shell pwd)/aw-make
+ifneq ($(findstring Windows,$(OS)),)
+export CWD := $(shell cmd /c echo %cd:\=/%)
+export TRUE := $(shell cmd /c break)
+else
+export CWD := $(shell pwd)
+export TRUE := @true
+endif
+
+export AW_MAKE_PATH ?= $(CWD)/aw-make
 export AW_MAKE_FILE = $(AW_MAKE_PATH)/bas.mk
 export BUNDLE_PREFIX ?= noname
 
@@ -10,8 +18,6 @@ include $(AW_MAKE_PATH)/ld.mk
 -include $(wildcard *.mk)
 
 PRODUCTS := $(addsuffix $(EXESUF), $(PROGRAMS)) $(PRODUCTS)
-
-$(warning -- $(PRODUCTS) --)
 
 .PHONY: all
 all: $(PRODUCTS)
@@ -36,15 +42,18 @@ endif
 ifneq ($(SOSUF),)
 RM_SHARED_OBJECTS = $(RM) *$(EXESUF)$(SOSUF)
 endif
+ifneq ($(PROGRAMS),)
+RM_PROGRAMS = $(RM) $(addsuffix $(EXESUF), $(PROGRAMS))
+endif
 
 .PHONY: clean
 clean:
 	test ! -d extern || $(MAKE) -f $(AW_MAKE_PATH)/ext.mk -C extern clean
 	for dir in $(patsubst %.mk,%,$(wildcard *.mk)); do $(MAKE) -C $$dir -f $(AW_MAKE_PATH)/rm.mk clean; done
-	$(RM) $(addsuffix $(EXESUF), $(PROGRAMS))
 	$(RM_PROGRAM_BUNDLES)
 	$(RM_PRODUCT_APKS)
 	$(RM_SHARED_OBJECTS)
+	$(RM_PROGRAMS)
 
 .PHONY: distclean
 distclean: clean
@@ -52,5 +61,5 @@ distclean: clean
 
 .PHONY: recurse
 recurse:
-	@true
+	$(TRUE)
 

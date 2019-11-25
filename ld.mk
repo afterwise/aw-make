@@ -3,8 +3,8 @@
 
 # linkers
 
-%.win32-x86.exe %.win32-x86.exe.dll: LD = MSYS_NO_PATHCONV=1 "$(VCINSTALLDIR)\bin\link" /nologo
-%.win32-x86_64.exe %.win32-x86_64.exe.dll: LD = MSYS_NO_PATHCONV=1 "$(VCINSTALLDIR)\bin\link" /nologo
+%.windows-x86.exe %.windows-x86.exe.dll: LD = MSYS_NO_PATHCONV=1 "$(VC_TOOLS)/link" /nologo
+%.windows-x64.exe %.windows-x64.exe.dll: LD = MSYS_NO_PATHCONV=1 "$(VC_TOOLS)/link" /nologo
 %.darwin-x86.macho %.darwin-x86.macho.so: LD = clang
 %.darwin-x86_64.macho %.darwin-x86_64.macho.so: LD = clang
 %.linux-x86.elf %.linux-x86.elf.so: LD = $(CC)
@@ -20,8 +20,13 @@
 
 # linker flags
 
-%.win32-x86.exe %.win32-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
-%.win32-x86.exe %.win32-x86.exe.dll: LDLIBS += user32.lib kernel32.lib \
+%.windows-x86.exe %.windows-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
+%.windows-x86.exe %.windows-x86.exe.dll: LDLIBS += user32.lib kernel32.lib \
+	psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
+	msvcrt.lib MSVCPRT.LIB
+
+%.windows-x64.exe %.windows-x64.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
+%.windows-x64.exe %.windows-x64.exe.dll: LDLIBS += user32.lib kernel32.lib \
 	psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
 	msvcrt.lib MSVCPRT.LIB
 
@@ -56,9 +61,9 @@
 %.ios-arm.macho %.ios-arm.macho.so: LDFLAGS += -target armv7-apple-ios -isysroot $(IOS_SYSROOT)
 %.ios-arm64.macho %.ios-arm64.macho.so: LDFLAGS += -arch arm64 -isysroot $(IOS_SYSROOT)
 
-# link win32
+# link windows
 
-ifneq ($(findstring win32,$(TARGET)),)
+ifneq ($(findstring Windows,$(OS)),)
 define link
 	$(LD) $(LDFLAGS) /OUT:$@ $^ $(LIBRARIES) $(LDLIBS)
 endef

@@ -220,5 +220,5 @@ distclean:
 
 .PHONY: recurse
 recurse:
-	@true
+	$(TRUE)
 

@@ -1,23 +1,21 @@
 
+ifneq ($(findstring Windows,$(OS)),)
+export HOST := Windows
+export HOST_ARCH := $(Platform)
+else
 export HOST := $(shell uname -s)
 export HOST_ARCH := $(shell uname -m)
-
-ifneq ($(findstring CYGWIN,$(HOST)),)
-	export HOST := win32-$(HOST_ARCH)
-	export TARGET ?= $(HOST)
-	export HOSTEXESUF := .$(HOST).exe
-	export EXESUF := .$(TARGET).exe
-	export LIBSUF := .lib
-	export SOSUF := .dll
 endif
 
-ifneq ($(findstring MINGW,$(HOST)),)
-	export HOST := win32-$(HOST_ARCH)
+ifeq ($(HOST),Windows)
+	export HOST := windows-$(HOST_ARCH)
 	export TARGET ?= $(HOST)
 	export HOSTEXESUF := .$(HOST).exe
 	export EXESUF := .$(TARGET).exe
 	export LIBSUF := .lib
 	export SOSUF := .dll
+
+	export VC_TOOLS := $(VCToolsInstallDir)bin/Host$(Platform)/$(Platform)
 endif
 
 ifeq ($(HOST),Darwin)
