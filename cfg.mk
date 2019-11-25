@@ -8,6 +8,9 @@ export HOST_ARCH := $(shell uname -m)
 endif
 
 ifeq ($(HOST),Windows)
+ifeq ($(VCToolsInstallDir),)
+$(error VCToolsInstallDir is not set)
+endif
 	export HOST := windows-$(HOST_ARCH)
 	export TARGET ?= $(HOST)
 	export HOSTEXESUF := .$(HOST).exe

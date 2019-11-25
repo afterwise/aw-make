@@ -1,10 +1,5 @@
 
-ifneq ($(findstring Windows,$(OS)),)
-SOURCES := $(shell dir *.c *.cpp *.m 2>NUL)
-else
-SOURCES := $(shell echo $(TARGET) | sed -E 's/([a-z0-9]+)\-([a-z0-9]+).*/(\\w|\\-)+(\\.(\1|\2))?(\\.c(pp)?|\\.m)/')
-SOURCES := $(shell ls | grep -xE '$(SOURCES)')
-endif
+SOURCES := $(shell ls | grep -xE "[A-Za-z0-9_\-]+(\.$(shell echo $(TARGET) | sed -E 's/(\-\w+)$$/(\1)?/'))?\.((c(pp)?)|m)")
 
 OBJECTS := $(patsubst %.c, %$(EXESUF).o, $(SOURCES))
 OBJECTS := $(patsubst %.cpp, %$(EXESUF).o, $(OBJECTS))

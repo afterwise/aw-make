@@ -21,14 +21,12 @@
 # linker flags
 
 %.windows-x86.exe %.windows-x86.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
-%.windows-x86.exe %.windows-x86.exe.dll: LDLIBS += user32.lib kernel32.lib \
-	psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
-	msvcrt.lib MSVCPRT.LIB
+%.windows-x86.exe %.windows-x86.exe.dll: LDLIBS += \
+	user32.lib kernel32.lib psapi.lib xinput.lib winmm.lib msvcrt.lib MSVCPRT.LIB
 
 %.windows-x64.exe %.windows-x64.exe.dll: LDFLAGS += /SUBSYSTEM:CONSOLE /DEBUG /NOLOGO /WX /INCREMENTAL:NO
-%.windows-x64.exe %.windows-x64.exe.dll: LDLIBS += user32.lib kernel32.lib \
-	psapi.lib glut32.lib opengl32.lib glu32.lib xinput.lib winmm.lib \
-	msvcrt.lib MSVCPRT.LIB
+%.windows-x64.exe %.windows-x64.exe.dll: LDLIBS += \
+	user32.lib kernel32.lib psapi.lib xinput.lib winmm.lib msvcrt.lib MSVCPRT.LIB
 
 %.darwin-x86.macho %.darwin-x86.macho.so: LDFLAGS += -flto -Wl,-dead_strip -Wl,-arch -Wl,i386
 %.darwin-x86_64.macho %.darwin-x86_64.macho.so: LDFLAGS += -flto -Wl,-dead_strip -Wl,-arch -Wl,x86_64
@@ -68,7 +66,7 @@ define link
 	$(LD) $(LDFLAGS) /OUT:$@ $^ $(LIBRARIES) $(LDLIBS)
 endef
 define link-shared
-	$(LD) $(LDFLAGS) /DLL /OUT:$@ $^ $(LDLIBS)
+	$(LD) $(LDFLAGS) /DLL /OUT:$@ $(patsubst %$(LIBSUF), /WHOLEARCHIVE:%$(LIBSUF), $^) $(LDLIBS)
 endef
 
 # link darwin

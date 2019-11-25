@@ -94,7 +94,7 @@ endif
 ifneq ($(findstring Windows,$(OS)),)
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
-	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) $(addprefix /D, $(DEFINES)) /Fo $@ /c $<
+	$(CC) $(CFLAGS) $(addprefix /I, $(INCLUDES)) $(addprefix /D, $(DEFINES)) /Fo$@ /c $<
 else
 .PRECIOUS: %$(EXESUF).o
 %$(EXESUF).o: %.c* | $(REQUIRES)
