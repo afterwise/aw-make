@@ -61,7 +61,7 @@
 
 # link windows
 
-ifneq ($(findstring Windows,$(OS)),)
+ifneq ($(findstring windows,$(TARGET)),)
 define link
 	$(LD) $(LDFLAGS) /OUT:$@ $^ $(LIBRARIES) $(LDLIBS)
 endef

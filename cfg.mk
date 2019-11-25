@@ -1,13 +1,13 @@
 
 ifneq ($(findstring Windows,$(OS)),)
-export HOST := Windows
+export HOST := $(OS)
 export HOST_ARCH := $(Platform)
 else
 export HOST := $(shell uname -s)
 export HOST_ARCH := $(shell uname -m)
 endif
 
-ifeq ($(HOST),Windows)
+ifeq ($(HOST),Windows_NT)
 ifeq ($(VCToolsInstallDir),)
 $(error VCToolsInstallDir is not set)
 endif
